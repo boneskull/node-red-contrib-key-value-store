@@ -1,0 +1,39 @@
+<script type="text/javascript">
+  RED.nodes.registerType('key-value-store', {
+    category: 'config',
+    defaults: {
+      filepath: {
+        value: 'store.json',
+        required: true
+      },
+      namespace: {
+        value: ''
+      }
+    }
+  });
+
+</script>
+
+<script type="text/x-red" data-template-name="key-value-store">
+  <div class="form-row">
+    <label for="node-config-input-filepath"><i class="fa fa-database"></i>
+      Filepath
+    </label>
+    <input type="text"
+           id="node-config-input-filepath"
+           placeholder="store.json"/>
+  </div>
+
+  <div class="form-row">
+    <label for="node-config-input-namespace"><i class="fa fa-hockey-puck"></i>
+      Namespace
+    </label>
+    <input type="text" id="node-config-input-namespace" placeholder="(none)"/>
+  </div>
+
+</script>
+
+<script type="text/x-red" data-help-name="key-value-store">
+  <p>Description</p>
+
+</script>

@@ -1,0 +1,83 @@
+<script>
+  (function() {
+    const POSSIBLE_TYPES = ['msg', 'flow', 'global', 'jsonata'];
+    const DEFAULT_TYPE = 'msg';
+
+    RED.nodes.registerType('key-value-input', {
+      category: 'function',
+      defaults: {
+        store: {
+          type: 'key-value-store',
+          value: ''
+        },
+        key: {
+          value: 'topic',
+          required: true,
+          validate: RED.validators.typedInput('keyType')
+        },
+        keyType: {value: DEFAULT_TYPE},
+        keyvalue: {
+          value: 'payload',
+          required: true,
+          validate: RED.validators.typedInput('keyvalueType')
+        },
+        keyvalueType: {value: DEFAULT_TYPE},
+        name: {value: ''}
+      },
+      label() {
+        return this.name.value || this.key.value || 'set value';
+      },
+      labelStyle() {
+        return this.name.value ? 'node_label_italic' : '';
+      },
+      icon: 'db.png',
+      inputs: 1,
+      outputs: 1,
+      color: '#c162d1',
+      oneditprepare() {
+        $('#node-input-key')
+          .typedInput({
+            default: this.keyType || DEFAULT_TYPE,
+            types: POSSIBLE_TYPES
+          });
+        $('#node-input-keyvalue')
+          .typedInput({
+            default: this.keyvalueType || DEFAULT_TYPE,
+            types: POSSIBLE_TYPES
+          });
+      },
+      oneditsave() {
+        this.keyType = $('#node-input-key').typedInput('type');
+        this.keyvalueType = $('#node-input-keyvalue').typedInput('type');
+      }
+    });
+
+  }());
+</script>
+
+<script type="text/x-red" data-template-name="key-value-input">
+  <div class="form-row">
+    <label for="node-input-store"><i class="fa fa-database"></i> Store</label>
+    <input id="node-input-store"/>
+  </div>
+
+  <div class="form-row">
+    <label for="node-input-key"><i class="fa fa-key"></i> Key</label>
+    <input type="text" id="node-input-key" style="width: 70%;"/>
+  </div>
+
+  <div class="form-row">
+    <label for="node-input-keyvalue"><i class="fa fa-cube"></i> Value</label>
+    <input type="text" id="node-input-keyvalue" style="width: 70%;">
+  </div>
+
+  <div class="form-row">
+    <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+    <input type="text" id="node-input-name"/>
+  </div>
+
+</script>
+
+<script type="text/x-red" data-help-name="key-value-input">
+  <p>Description</p>
+</script>
