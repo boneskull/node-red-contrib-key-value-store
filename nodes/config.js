@@ -10,9 +10,11 @@ module.exports = RED => {
     RED.nodes.createNode(this, n);
 
     this.filepath = n.filepath;
-    const filepath = this._filepath = path.normalize(isRelative(this.filepath)
-      ? path.join(RED.settings.userDir, this.filepath)
-      : this.filepath);
+    const filepath = this._filepath =
+      path.normalize(isRelative(this.filepath) ? path.join(
+        RED.settings.userDir,
+        this.filepath
+      ) : this.filepath);
     this.debug(`Normalized filepath ${this.filepath} to ${filepath}`);
     const namespace = this.namespace = n.namespace;
 
@@ -33,7 +35,9 @@ module.exports = RED => {
   };
 
   KeyValueStoreNode.prototype = {
-    get() {
+    get(key) {
+      key = this._keypath(key);
+      return this._ready.then(() => this._db.get(key));
     },
     set(key, value) {
       key = this._keypath(key);
@@ -42,9 +46,24 @@ module.exports = RED => {
           this.debug(`Wrote value to keypath "${key}" in ${this.filepath}`);
         });
     },
-    delete() {
+    delete(key) {
+      key = this._keypath(key);
+      return this._ready.then(() => this._db.unset(key).write())
+        .then(() => {
+          this.debug(`Deleted value at keypath "${key}" in ${this.filepath}`);
+        });
     },
     clear() {
+      return this._ready.then(() => {
+        if (this.namespace) {
+          return this._db.unset(this.namespace).write().then(() => {
+            this.debug(`Cleared db at namespace "${namespace}" in ${this.filepath}`);
+          });
+        }
+        return this._db.setState({}).write().then(() => {
+          this.debug(`Cleared db in ${this.filepath}`);
+        });
+      });
     }
   };
 

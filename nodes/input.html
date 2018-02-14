@@ -1,7 +1,13 @@
 <script>
   (function() {
-    const POSSIBLE_TYPES = ['msg', 'flow', 'global', 'jsonata'];
-    const DEFAULT_TYPE = 'msg';
+    const POSSIBLE_INPUTS = ['msg', 'flow', 'global', 'jsonata'];
+    const ACTION_SET = 'set';
+    const ACTION_DELETE = 'delete';
+    const ACTION_CLEAR = 'clear';
+    const POSSIBLE_ACTIONS = [ACTION_SET, ACTION_DELETE, ACTION_CLEAR];
+    const DEFAULT_INPUT = 'msg';
+    const DEFAULT_ACTION = ACTION_SET;
+    const FORM_ROW_SELECTOR = '.form-row';
 
     RED.nodes.registerType('key-value-input', {
       category: 'function',
@@ -10,41 +16,78 @@
           type: 'key-value-store',
           value: ''
         },
+        action: {
+          value: ACTION_SET,
+          required: true,
+          validate: value => POSSIBLE_ACTIONS.indexOf(value) > -1
+        },
         key: {
           value: 'topic',
-          required: true,
-          validate: RED.validators.typedInput('keyType')
+          validate(value) {
+            return this.action === ACTION_CLEAR ||
+              RED.validators.typedInput('keyType')(value);
+          }
         },
-        keyType: {value: DEFAULT_TYPE},
+        keyType: {value: DEFAULT_INPUT},
         keyvalue: {
           value: 'payload',
-          required: true,
-          validate: RED.validators.typedInput('keyvalueType')
+          validate(value) {
+            return this.action !== ACTION_SET ||
+              RED.validators.typedInput('keyvalueType')(value);
+          }
         },
-        keyvalueType: {value: DEFAULT_TYPE},
+        keyvalueType: {value: DEFAULT_INPUT},
         name: {value: ''}
       },
       label() {
-        return this.name.value || this.key.value || 'set value';
+        return this.name || this.action || 'input';
       },
       labelStyle() {
-        return this.name.value ? 'node_label_italic' : '';
+        return this.name ? 'node_label_italic' : '';
       },
       icon: 'db.png',
       inputs: 1,
       outputs: 1,
       color: '#c162d1',
       oneditprepare() {
-        $('#node-input-key')
+        const $nodeInputKey = $('#node-input-key');
+        const $nodeInputKeyvalue = $('#node-input-keyvalue');
+        const $nodeInputKeyRow = $nodeInputKey.parents(FORM_ROW_SELECTOR);
+        const $nodeInputKeyvalueRow = $nodeInputKeyvalue.parents(
+          FORM_ROW_SELECTOR);
+
+        const togglers = {
+          clear: () => {
+            $nodeInputKeyRow.hide();
+            $nodeInputKeyvalueRow.hide();
+          },
+          delete: () => {
+            $nodeInputKeyRow.show();
+            $nodeInputKeyvalueRow.hide();
+          },
+          set: () => {
+            $nodeInputKeyRow.show();
+            $nodeInputKeyvalueRow.show();
+          }
+        };
+
+        $nodeInputKey
           .typedInput({
-            default: this.keyType || DEFAULT_TYPE,
-            types: POSSIBLE_TYPES
+            default: this.keyType || DEFAULT_INPUT,
+            types: POSSIBLE_INPUTS
           });
-        $('#node-input-keyvalue')
+
+        $nodeInputKeyvalue
           .typedInput({
-            default: this.keyvalueType || DEFAULT_TYPE,
-            types: POSSIBLE_TYPES
+            default: this.keyvalueType || DEFAULT_INPUT,
+            types: POSSIBLE_INPUTS
           });
+
+        $('#node-input-action')
+          .change(function() {
+            togglers[$(this).val()]();
+          })
+          .val(this.action || DEFAULT_ACTION);
       },
       oneditsave() {
         this.keyType = $('#node-input-key').typedInput('type');
@@ -62,6 +105,15 @@
   </div>
 
   <div class="form-row">
+    <label for="node-input-action"><i class="fa fa-cog"></i> Action</label>
+    <select id="node-input-action">
+      <option value="set">Set</option>
+      <option value="delete">Delete</option>
+      <option value="clear">Clear</option>
+    </select>
+  </div>
+
+  <div class="form-row">
     <label for="node-input-key"><i class="fa fa-key"></i> Key</label>
     <input type="text" id="node-input-key" style="width: 70%;"/>
   </div>
@@ -73,7 +125,7 @@
 
   <div class="form-row">
     <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
-    <input type="text" id="node-input-name"/>
+    <input type="text" id="node-input-name" style="width: 70%;"/>
   </div>
 
 </script>
