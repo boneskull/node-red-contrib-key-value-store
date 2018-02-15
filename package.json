@@ -18,7 +18,8 @@
     "lowdb",
     "keypath",
     "key",
-    "value"
+    "value",
+    "node-red"
   ],
   "engines": {
     "node": ">=6.0.0"
