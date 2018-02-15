@@ -9,11 +9,8 @@ module.exports = RED => {
 
     this.on('input', msg => {
       const key = this.key || msg.topic;
-      this.debug(`Received key "${key}"`);
-
       return this.store.get(key)
         .then(data => {
-          this.debug(`Received data from store: ${data}`);
           msg.payload = data;
           this.send(msg);
         })
