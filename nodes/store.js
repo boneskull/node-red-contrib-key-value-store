@@ -36,11 +36,12 @@ module.exports = RED => {
   KeyValueStoreNode.prototype = {
     get(key) {
       key = this._keypath(key);
-      return this._ready.then(() => this._db.get(key).value()).then(res => {
-        this.debug(`Got ${res
+      return this._db.read().then(() => {
+        const value = this._db.get(key).value();
+        this.debug(`Got ${value
           ? 'truthy'
           : 'falsy'} value from keypath "${key}" in ${this.filepath}`);
-        return res;
+        return value;
       });
     },
     set(key, value) {
