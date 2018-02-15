@@ -26,7 +26,9 @@ $ npm i node-red-contrib-key-value-store
 
 ## Usage
 
-Nodes are found within the **storage** category in NR's palette.  See node documentation ("info" panel) for specific usage.
+Nodes are found within the **key value** category in NR's palette.  
+
+See node documentation ("info" panel) for specific usage.
 
 ## Maintainers
 
