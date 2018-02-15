@@ -1,0 +1,89 @@
+<script>
+  (function() {
+    RED.nodes.registerType('key-value-read', {
+      category: 'storage',
+      defaults: {
+        store: {
+          type: 'key-value-store',
+          value: ''
+        },
+        key: {
+          value: ''
+        },
+        name: {value: ''}
+      },
+      label() {
+        return this.name || 'read';
+      },
+      labelStyle() {
+        return this.name ? 'node_label_italic' : '';
+      },
+      icon: 'db.png',
+      inputs: 1,
+      outputs: 1,
+      color: '#c162d1',
+      paletteLabel: 'read'
+    });
+
+  }());
+</script>
+
+<script type="text/x-red" data-template-name="key-value-read">
+  <div class="form-row">
+    <label for="node-input-store"><i class="fa fa-database"></i> Store</label>
+    <input id="node-input-store"/>
+  </div>
+
+  <div class="form-row">
+    <label for="node-input-key"><i class="fa fa-key"></i> Key</label>
+    <input type="text"
+           id="node-input-key"
+           style="width: 70%;"
+           placeholder="(msg.topic)"/>
+  </div>
+
+  <div class="form-row">
+    <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+    <input type="text" id="node-input-name" style="width: 70%;"/>
+  </div>
+
+</script>
+
+<script type="text/x-red" data-help-name="key-value-read">
+  <p>Reads from a JSON-based key-value store.</p>
+
+  <h3>Inputs</h3>
+  <dl class="message-properties">
+    <dt class="optional">topic <span class="property-type">string</span></dt>
+    <dd>the key to write, if not otherwise specified in the node's
+      <strong>key</strong> property
+    </dd>
+  </dl>
+
+  <h3>Outputs</h3>
+  <dl class="message-properties">
+    <dt>payload <span class="property-type">any</span></dt>
+    <dd>the value corresponding to the key, if found
+    </dd>
+  </dl>
+
+  <h3>Details</h3>
+
+  <p>Unless the <strong>key</strong> property is specified,
+    <code>msg.topic</code> will be used for the key with which to retrieve the
+     value.</p><p>
+    Keys can be "key paths", e.g., `foo.bar` will correspond to the `bar`
+    property of the `foo` property.</p><p>If the selected <strong>store</strong>
+                                          has a <strong>namespace</strong>, all
+                                          keys will be prefixed with the
+                                          namespace before storage, using a key
+                                          path. For example, if your key is
+                                          `baz` and your store's namespace is
+                                          `foo.bar`, then the complete key will
+                                          be `foo.bar.baz`.</p><p>The key is
+                                                                  ignored if the
+    <strong>action</strong> (or <code>msg.action</code>) is <code>clear</code>.
+  </p>References</h3><p>See <a href="https://lodash.com/docs/4.17.5#set"
+                               target="_blank">LoDash's documentation for <code>_.set()</code></a>
+                        for more information on valid keys.</p>
+</script>

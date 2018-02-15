@@ -11,8 +11,7 @@ module.exports = RED => {
 
     this.filepath = n.filepath;
     const filepath = this._filepath =
-      path.normalize(isRelative(this.filepath) ? path.join(
-        RED.settings.userDir,
+      path.normalize(isRelative(this.filepath) ? path.join(RED.settings.userDir,
         this.filepath
       ) : this.filepath);
     this.debug(`Normalized filepath ${this.filepath} to ${filepath}`);
@@ -37,7 +36,12 @@ module.exports = RED => {
   KeyValueStoreNode.prototype = {
     get(key) {
       key = this._keypath(key);
-      return this._ready.then(() => this._db.get(key));
+      return this._ready.then(() => this._db.get(key)).then(res => {
+        this.debug(`Got ${res
+          ? 'truthy'
+          : 'falsy'} value from keypath "${key}" in ${this.filepath}`);
+        return res;
+      });
     },
     set(key, value) {
       key = this._keypath(key);

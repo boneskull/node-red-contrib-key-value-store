@@ -1,0 +1,79 @@
+<script type="text/javascript">
+  RED.nodes.registerType('key-value-store', {
+    category: 'config',
+    defaults: {
+      filepath: {
+        value: 'store.json',
+        required: true
+      },
+      namespace: {
+        value: ''
+      },
+      name: {
+        value: ''
+      }
+    },
+    label() {
+      return this.name || this.filepath || 'store';
+    },
+    labelStyle() {
+      return this.name ? 'node_label_italic' : '';
+    }
+  });
+
+</script>
+
+<script type="text/x-red" data-template-name="key-value-store">
+  <div class="form-row">
+    <label for="node-config-input-filepath"><i class="fa fa-database"></i>
+      Filepath
+    </label>
+    <input type="text"
+           id="node-config-input-filepath"
+           placeholder="store.json"/>
+  </div>
+
+  <div class="form-row">
+    <label for="node-config-input-namespace"><i class="fa fa-hockey-puck"></i>
+      Namespace
+    </label>
+    <input type="text" id="node-config-input-namespace" placeholder="(none)"/>
+  </div>
+
+  <div class="form-row">
+    <label for="node-config-input-name"><i class="fa fa-tag"></i> Name</label>
+    <input type="text" id="node-config-input-name" style="width: 70%;"/>
+  </div>
+
+</script>
+
+<script type="text/x-red" data-help-name="key-value-store">
+  <p>Configures a JSON-based key-value store.</p>
+
+  <h3>Details</h3>
+
+  The default database file contains an empty object.  Even though this is a key-value store, the data is stored in an object <em>hierarchy</em>.  For example, the value for key <code>foo.bar</code> in the below JSON store will is <code>"baz"</code>:
+  <pre>{
+  "foo": {
+    "bar": "baz"
+  }
+}</pre>
+
+  <h4>Filepath</h4>
+
+  <p>If the filepath is relative, it will be relative from Node-RED's user directory.</p>
+
+  <p>The <code>.json</code> extension is recommended, but not required.</p>
+
+  <h4>Namespace</h4>
+
+  <p>If **namespace** is provided, when this store is accessed, any keys used will be prefixed by the namespace.  For example, if a "read" node passes key <code>bar</code> to a store with a namespace of <code>foo</code>, the value returned will be at the <code>foo.bar</code> path.  Namespaces can be nested, e.g., <code>foo.bar.</code>.  "Delete" and "clear" actions respect namespaces.</p>
+
+  <p>Namespaces are useful if you want to use the same JSON file in multiple stores, or wish to "protect" a certain property.</p>
+
+  </p>References</h3><p>See <a href="https://lodash.com/docs/4.17.5#set"
+                               target="_blank">LoDash's documentation for <code>_.set()</code></a>
+                        for more information on valid keys.</p>
+
+
+</script>

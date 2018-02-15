@@ -1,0 +1,187 @@
+<script>
+  (function() {
+    const ACTION_SET = 'set';
+    const ACTION_DELETE = 'delete';
+    const ACTION_CLEAR = 'clear';
+    const POSSIBLE_ACTIONS = [ACTION_SET, ACTION_DELETE, ACTION_CLEAR];
+    const DEFAULT_ACTION = ACTION_SET;
+    const FORM_ROW_SELECTOR = '.form-row';
+
+    RED.nodes.registerType('key-value-write', {
+      category: 'storage',
+      defaults: {
+        store: {
+          type: 'key-value-store',
+          value: ''
+        },
+        action: {
+          value: ACTION_SET,
+          validate: value => value && POSSIBLE_ACTIONS.indexOf(value) > -1
+        },
+        key: {
+          value: ''
+        },
+        keyvalue: {
+          value: ''
+        },
+        name: {
+          value: ''
+        }
+      },
+      label() {
+        return this.name || 'write';
+      },
+      labelStyle() {
+        return this.name ? 'node_label_italic' : '';
+      },
+      icon: 'db.png',
+      inputs: 1,
+      outputs: 1,
+      color: '#c162d1',
+      paletteLabel: 'key value write',
+      oneditprepare() {
+        const $nodeInputKeyRow = $('#node-input-key')
+          .parents(FORM_ROW_SELECTOR);
+        const $nodeInputKeyvalueRow = $('#node-input-keyvalue')
+          .parents(FORM_ROW_SELECTOR);
+
+        const togglers = {
+          clear: () => {
+            $nodeInputKeyRow.hide();
+            $nodeInputKeyvalueRow.hide();
+          },
+          delete: () => {
+            $nodeInputKeyRow.show();
+            $nodeInputKeyvalueRow.hide();
+          },
+          set: () => {
+            $nodeInputKeyRow.show();
+            $nodeInputKeyvalueRow.show();
+          }
+        };
+
+        $('#node-input-action')
+          .change(function() {
+            togglers[$(this).val() || DEFAULT_ACTION]();
+          })
+          .val(this.action || DEFAULT_ACTION);
+      }
+    });
+
+  }());
+</script>
+
+<script type="text/x-red" data-template-name="key-value-write">
+  <div class="form-row">
+    <label for="node-input-store"><i class="fa fa-database"></i> Store</label>
+    <input id="node-input-store"/>
+  </div>
+
+  <div class="form-row">
+    <label for="node-input-action"><i class="fa fa-cog"></i> Action</label>
+    <select id="node-input-action">
+      <option value="">(msg.action)</option>
+      <option value="set">Set</option>
+      <option value="delete">Delete</option>
+      <option value="clear">Clear</option>
+    </select>
+  </div>
+
+  <div class="form-row">
+    <label for="node-input-key"><i class="fa fa-key"></i> Key</label>
+    <input type="text"
+           id="node-input-key"
+           style="width: 70%;"
+           placeholder="(msg.topic)"/>
+  </div>
+
+  <div class="form-row">
+    <label for="node-input-keyvalue"><i class="fa fa-cube"></i> Value</label>
+    <input type="text"
+           id="node-input-keyvalue"
+           style="width: 70%;"
+           placeholder="(msg.payload)">
+  </div>
+
+  <div class="form-row">
+    <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+    <input type="text" id="node-input-name" style="width: 70%;"/>
+  </div>
+
+</script>
+
+<script type="text/x-red" data-help-name="key-value-write">
+  <p>Writes to a JSON-based key-value store.</p>
+
+  <h3>Inputs</h3>
+  <dl class="message-properties">
+    <dt class="optional">topic <span class="property-type">string</span></dt>
+    <dd>the key to write, if not otherwise specified in the node's
+      <strong>key</strong> property
+    </dd>
+    <dt class="optional">payload <span class="property-type">any</span>
+    </dt>
+    <dd>the value to write, if not otherwise specified in the node's <strong>value</strong>
+        property
+    </dd>
+    <dt class="optional">action <span class="property-type">"set" | "delete" | "clear"</span>
+    </dt>
+    <dd>the action to perform, if not otherwise specified in the node's <strong>action</strong>
+        property
+    </dd>
+  </dl>
+
+  <h3>Outputs</h3>
+  <dl class="message-properties">
+    <dt>topic <span class="property-type">string</span></dt>
+    <dd>the value of the node's <strong>key</strong> property, or the incoming
+        topic
+    </dd>
+    <dt>payload <span class="property-type">any</span></dt>
+    <dd>the value of the node's <strong>value</strong> property, or the incoming
+        payload
+    </dd>
+  </dl>
+
+  <h3>Details</h3>
+
+  <h4>Actions</h4><p>The default action is <strong>set</strong>. To use the
+                     action from <code>msg.action</code>, you must select
+    <strong>(msg.action)</strong> in the <strong>action</strong> menu.
+  </p>
+
+  <h4>Keys</h4><p>Unless the <strong>key</strong> property is specified, <code>msg.topic</code>
+                  will be used for the key with which to store the value.</p><p>
+    Keys can be "key paths", e.g., `foo.bar` will correspond to the `bar`
+    property of the `foo` property.</p><p>If the selected <strong>store</strong>
+                                          has a <strong>namespace</strong>, all
+                                          keys will be prefixed with the
+                                          namespace before storage, using a key
+                                          path. For example, if your key is
+                                          `baz` and your store's namespace is
+                                          `foo.bar`, then the complete key will
+                                          be `foo.bar.baz`.</p><p>The key is
+                                                                  ignored if the
+    <strong>action</strong> (or <code>msg.action</code>) is <code>clear</code>.
+  </p><h4>Values</h4><p>Unless the <strong>value</strong> property is specified,
+    <code>msg.payload</code> will be used for the value.</p><p>The value will be
+                                                               parsed from JSON
+                                                               (if possible)
+                                                               before storage.
+                                                               This means that a
+                                                               key
+    <code>foo</code> and value <code>{"bar": "baz"}</code> <strong>will</strong>
+                                                               be stored as:
+  <pre>{
+  "foo": {
+    "bar": "baz"
+  }
+}</pre>It <strong>will not</strong> be stored as:
+  <pre>{
+  "foo": "{\"bar\": \"baz\"}"
+}</pre></p><p>The value is ignored if the <strong>action</strong> (or <code>msg.action</code>)
+              is <code>delete</code> or <code>clear</code>.</p><h3>
+    References</h3><p>See <a href="https://lodash.com/docs/4.17.5#set"
+                             target="_blank">LoDash's documentation for <code>_.set()</code></a>
+                      for more information on valid keys.</p>
+</script>

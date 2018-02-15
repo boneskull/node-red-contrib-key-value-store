@@ -1,19 +1,33 @@
 {
   "name": "node-red-contrib-key-value-store",
-  "version": "0.0.1",
-  "description": "",
-  "author": "",
+  "version": "0.1.0",
+  "description": "Simple, persistent, JSON-based key-value store for Node-RED",
+  "author": "Christopher Hiller <boneskull@boneskull.com>",
   "dependencies": {
     "is-relative": "^1.0.0",
     "lowdb": "^1.0.0"
   },
+  "license": "MIT",
   "keywords": [
-    "node-red"
+    "json",
+    "persistence",
+    "key-value",
+    "keyvalue",
+    "store",
+    "storage",
+    "lowdb",
+    "keypath",
+    "key",
+    "value"
   ],
+  "engines": {
+    "node": ">=6.0.0"
+  },
   "node-red": {
     "nodes": {
-      "key-value-store": "nodes/config.js",
-      "key-value-input": "nodes/input.js"
+      "key-value-store": "nodes/store.js",
+      "key-value-read": "nodes/read.js",
+      "key-value-write": "nodes/write.js"
     }
   }
 }
