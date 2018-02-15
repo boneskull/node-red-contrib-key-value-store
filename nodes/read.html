@@ -1,7 +1,7 @@
 <script>
   (function() {
     RED.nodes.registerType('key-value-read', {
-      category: 'key value',
+      category: 'storage',
       defaults: {
         store: {
           type: 'key-value-store',
@@ -22,7 +22,7 @@
       inputs: 1,
       outputs: 1,
       color: '#9FC891',
-      paletteLabel: 'read'
+      paletteLabel: 'kv read'
     });
 
   }());

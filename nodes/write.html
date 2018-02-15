@@ -8,7 +8,7 @@
     const FORM_ROW_SELECTOR = '.form-row';
 
     RED.nodes.registerType('key-value-write', {
-      category: 'key value',
+      category: 'storage',
       defaults: {
         store: {
           type: 'key-value-store',
@@ -38,7 +38,7 @@
       inputs: 1,
       outputs: 1,
       color: '#F4CE6C',
-      paletteLabel: 'write',
+      paletteLabel: 'kv write',
       oneditprepare() {
         const $nodeInputKeyRow = $('#node-input-key')
           .parents(FORM_ROW_SELECTOR);
