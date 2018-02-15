@@ -29,5 +29,9 @@
       "key-value-read": "nodes/read.js",
       "key-value-write": "nodes/write.js"
     }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/boneskull/node-red-contrib-key-value-store.git"
   }
 }
