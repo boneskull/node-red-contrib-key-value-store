@@ -17,7 +17,7 @@ module.exports = RED => {
     this.debug(`Normalized filepath ${this.filepath} to ${filepath}`);
     const namespace = this.namespace = n.namespace;
 
-    this._keypath = namespace ? key => `${namespace}.key` : key => key;
+    this._keypath = namespace ? key => `${namespace}.${key}` : key => key;
 
     this.debug(`Loading key-value store at ${filepath}`);
     this._ready = low(new FileAsync(filepath))
