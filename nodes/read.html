@@ -10,6 +10,9 @@
         key: {
           value: ''
         },
+        output_key:{
+          value : ''
+        },
         name: {value: ''}
       },
       label() {
@@ -41,7 +44,13 @@
            style="width: 70%;"
            placeholder="(msg.topic)"/>
   </div>
-
+  <div class="form-row">
+    <label for="node-input-output_key"><i class="fa fa-key"></i>output propertie</label>
+    <input type="text"
+           id="node-input-output_key"
+           style="width: 70%;"
+           placeholder="(payload)"/>
+  </div>
   <div class="form-row">
     <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
     <input type="text" id="node-input-name" style="width: 70%;"/>
@@ -62,7 +71,7 @@
 
   <h3>Outputs</h3>
   <dl class="message-properties">
-    <dt>payload <span class="property-type">any</span></dt>
+    <dt>payload (or output_key)<span class="property-type">any</span></dt>
     <dd>the value corresponding to the key, if found
     </dd>
   </dl>
