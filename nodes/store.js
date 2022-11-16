@@ -29,7 +29,7 @@ module.exports = RED => {
         this.debug(`Key-value store ready at ${filepath}`);
       })
       .catch(err => {
-        node.error(`Failed to load key-value store at ${filepath}:\n\n${err}`);
+        this.error(`Failed to load key-value store at ${filepath}:\n\n${err}`);
       });
   };
 
