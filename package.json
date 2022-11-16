@@ -5,7 +5,8 @@
   "author": "Christopher Hiller <boneskull@boneskull.com>",
   "dependencies": {
     "is-relative": "^1.0.0",
-    "lowdb": "^1.0.0"
+    "lowdb": "^1.0.0",
+    "node-red-contrib-key-value-store": "file:node-red-contrib-key-value-store-0.1.9.tgz"
   },
   "license": "MIT",
   "keywords": [
